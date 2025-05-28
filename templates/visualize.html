@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Visualization</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            display: none; /* All charts hidden by default */
+            margin: 2rem auto; /* Center the chart container */
+            max-width: 80%; /* Restrict the chart width */
+            max-height: 500px; /* Restrict the chart height */
+        }
+        .chart-container.active {
+            display: block; /* Show the active chart */
+        }
+        .dropdown-container {
+            margin-bottom: 3rem; /* Increased space between dropdown and chart */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Attendance Visualization</a>
+            <button class="btn btn-light ms-auto" onclick="window.location.href='/'">Back to Dashboard</button>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Attendance Analysis</h1>
+
+        <!-- Dropdown Menu for Chart Selection -->
+        <div class="dropdown-container text-center">
+            <label for="chartSelector" class="form-label fw-bold">Select Chart to Visualize:</label>
+            <select id="chartSelector" class="form-select w-50 mx-auto">
+                <option value="attendanceChart">Total Attendance by Student</option>
+                <option value="attendanceTrendsChart">Attendance Trends</option>
+                <option value="courseAttendanceChart">Course-Wise Attendance</option>
+                <option value="yearChart">Year-Wise Attendance</option>
+            </select>
+        </div>
+
+        <!-- Chart Containers -->
+        <div id="attendanceChartContainer" class="chart-container active">
+            <h3 class="text-center">Total Attendance by Student</h3>
+            <canvas id="attendanceChart"></canvas>
+        </div>
+
+        <div id="attendanceTrendsChartContainer" class="chart-container">
+            <h3 class="text-center">Attendance Trends</h3>
+            <canvas id="attendanceTrendsChart"></canvas>
+        </div>
+
+        <div id="courseAttendanceChartContainer" class="chart-container">
+            <h3 class="text-center">Course-Wise Attendance</h3>
+            <canvas id="courseAttendanceChart"></canvas>
+        </div>
+
+        <div id="yearChartContainer" class="chart-container">
+            <h3 class="text-center">Year-Wise Attendance</h3>
+            <canvas id="yearChart"></canvas>
+        </div>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dropdown change event to toggle chart visibility
+        $('#chartSelector').on('change', function () {
+            const selectedChart = $(this).val(); // Get the selected chart ID
+            $('.chart-container').removeClass('active'); // Hide all charts
+            $(`#${selectedChart}Container`).addClass('active'); // Show the selected chart
+        });
+    </script>
+</body>
+</html>

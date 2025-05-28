@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .chat-container {
+            margin: 20px auto;
+            max-width: 800px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+        }
+        .messages {
+            height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 10px;
+            background: #f9f9f9;
+            margin-bottom: 20px;
+        }
+        .messages .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .messages .user-msg {
+            justify-content: flex-end;
+        }
+        .messages .bot-msg {
+            justify-content: flex-start;
+        }
+        .messages .message img {
+            width: 50px;
+            height: 50px;
+            margin: 0 10px;
+            object-fit: contain; /* Ensures the full image is shown */
+        }
+        .messages .text {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 12px;
+        }
+        .messages .user .text {
+            background-color: #007bff;
+            color: white;
+            border-top-right-radius: 0;
+        }
+        .messages .bot .text {
+            background-color: #e9ecef;
+            color: #333;
+            border-top-left-radius: 0;
+        }
+        .messages .text ul, .messages .text ol {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        .messages .text ul li, .messages .text ol li {
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+        }
+        .input-group button {
+            padding: 15px 30px;
+            font-size: 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .input-group button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Attendance Insight AI</a>
+            <button class="btn btn-light ms-auto" onclick="window.location.href='/'">Go Back</button>
+        </div>
+    </nav>
+
+    <!-- Chatbot Section -->
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Chat with Your Assistant</h1>
+
+        <div class="chat-container">
+            <!-- Chat Messages -->
+            <div class="messages" id="messages">
+                <!-- Chat messages will appear here -->
+            </div>
+
+            <!-- Input Group -->
+            <div class="input-group">
+                <input type="text" id="userMessage" placeholder="Type your message here..." />
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Logic -->
+    <script>
+        async function sendMessage() {
+            const userMessage = document.getElementById('userMessage').value;
+            if (!userMessage) return;
+
+            // Display the user's message
+            const messagesDiv = document.getElementById('messages');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user-msg';
+            userMsg.innerHTML = `
+                <div class="text user">${userMessage}</div>
+                <img src="/static/user.png" alt="User">
+            `;
+            messagesDiv.appendChild(userMsg);
+
+            // Scroll to the bottom
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Clear input field
+            document.getElementById('userMessage').value = '';
+
+            try {
+                // Send the message to the Flask backend
+                const response = await fetch('/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: userMessage }),
+                });
+
+                // Get the chatbot's response
+                const data = await response.json();
+                const botMsg = document.createElement('div');
+                botMsg.className = 'message bot-msg';
+                botMsg.innerHTML = `
+                    <img src="/static/bot.png" alt="Bot">
+                    <div class="text bot">${data.response || "Bot: I'm sorry, something went wrong."}</div>
+                `;
+                messagesDiv.appendChild(botMsg);
+
+                // Scroll to the bottom
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
