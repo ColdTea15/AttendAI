@@ -203,4 +203,3 @@ This project is licensed under the **MIT License**.
 * **Name**: \[Colman Tee]
 * **Email**: \[[olmantjs03@gmail.com](mailto:colmantjs03@gmail.com)]
 * **GitHub**: \[github.com/ColdTea15]
->>>>>>> 5495190 (Initial commit)
